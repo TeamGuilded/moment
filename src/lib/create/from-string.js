@@ -7,6 +7,8 @@ import getParsingFlags from './parsing-flags';
 // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
 var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
 var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+var completePrecisionIsoRegex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
+var noMillisecondsIsoRegex = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)/;
 
 var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
 
@@ -45,6 +47,9 @@ export function configFromISO(config) {
     var i, l,
         string = config._i,
         match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+        specificMatch =
+            completePrecisionIsoRegex.exec(string) ||
+            noMillisecondsIsoRegex.exec(string),
         allowTime, dateFormat, timeFormat, tzFormat;
 
     if (match) {
@@ -88,6 +93,10 @@ export function configFromISO(config) {
         }
         config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
         configFromStringAndFormat(config);
+
+        if (specificMatch) {
+            config._dateOverride = new Date(string);
+        }
     } else {
         config._isValid = false;
     }

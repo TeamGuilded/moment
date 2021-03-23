@@ -26,6 +26,15 @@ function createFromConfig (config) {
         res._nextDay = undefined;
     }
 
+    // This is a ISO date string, so create a second moment based on this
+    //  date value to verify equality with the original moment
+    if (config._dateOverride) {
+        const dateBasedMoment = createLocalOrUTC(config._dateOverride);
+        if (!res.isSame(dateBasedMoment)) {
+            throw new Error('Dates do not match for ' + config._i);
+        }
+    }
+
     return res;
 }
 
