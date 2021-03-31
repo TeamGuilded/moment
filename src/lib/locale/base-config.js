@@ -40,5 +40,7 @@ export var baseConfig = {
     weekdaysMin: defaultLocaleWeekdaysMin,
     weekdaysShort: defaultLocaleWeekdaysShort,
 
-    meridiemParse: defaultLocaleMeridiemParse
+    meridiemParse: defaultLocaleMeridiemParse,
+
+    useFastISOMatch: false
 };

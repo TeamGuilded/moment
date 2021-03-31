@@ -1786,7 +1786,9 @@
         weekdaysMin: defaultLocaleWeekdaysMin,
         weekdaysShort: defaultLocaleWeekdaysShort,
 
-        meridiemParse: defaultLocaleMeridiemParse
+        meridiemParse: defaultLocaleMeridiemParse,
+
+        useFastISOMatch: false
     };
 
     // internal storage for locale config files
@@ -2199,11 +2201,11 @@
     function configFromISO(config) {
         var i, l,
             string = config._i,
+            useFastISOMatch = config._locale._useFastISOMatch,
             match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            specificMatch =
-                completePrecisionIsoRegex.exec(string) ||
-                noMillisecondsIsoRegex.exec(string),
             allowTime, dateFormat, timeFormat, tzFormat;
+
+        var specificMatch = useFastISOMatch && !!(completePrecisionIsoRegex.exec(string) || noMillisecondsIsoRegex.exec(string));
 
         if (specificMatch) {
             config._d = new Date(string);
