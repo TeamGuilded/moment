@@ -2199,7 +2199,7 @@
     function configFromISO(config) {
         var i, l,
             string = config._i,
-            useFastISOMatch = config._locale._useFastISOMatch,
+            useFastISOMatch = !!(config._locale && config._locale._useFastISOMatch),
             match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
             allowTime, dateFormat, timeFormat, tzFormat;
 
